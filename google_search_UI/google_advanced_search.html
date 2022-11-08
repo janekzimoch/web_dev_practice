@@ -2,17 +2,37 @@
 <html lang="en">
     <head>
         <title>Search</title>
+        <link rel="stylesheet" href="index.css">
     </head>
     <body>
       <div>
         <span class="menu_bar_component"><a href="./index.html">Go back</a></span>
       </div>
 
-      <div>
+      <div class="search_space">
         <h1>Advanced search</h1>
-        <form action="https://www.google.com/search">
-            <input type="text" name="q">
-            <input type="submit" value="Google Search">
+        <form action="https://www.google.com/search" method="get">
+          <div class="adv_search_header"> 
+            <label>Find pages with…</label><br>
+          </div>
+          <div class="adv_search_bar">
+            <label for="all_these_words">all these words:</label>
+            <input type="text" name="as_q" id="all_these_words"></br></br>
+          </div>
+          <div class="adv_search_bar">
+            <label for="this_exact_word">this exact word or phrase:</label>
+            <input type="text" name="as_epq" id="this_exact_word"></br></br>
+          </div>
+          <div class="adv_search_bar">
+            <label for="any_of_these_words">any of these words:</label>
+            <input type="text" name="as_oq" id="any_of_these_words"></br></br>
+          </div>
+          <div class="adv_search_bar">
+            <label for="none_of_these_words">none of these words:</label>
+            <input type="text" name="as_eq" id="none_of_these_words"></br></br></br>
+          </div>
+
+          <input class="adv_search_button" type="submit" value="Advanced Search">
         </form>
       </div>
     </body>

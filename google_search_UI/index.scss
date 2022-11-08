@@ -2,6 +2,28 @@
 $light_object_color: #A9A9A9;
 $lighter_object_color: #989898;
 
+
+// General search space
+.search_button {
+    padding: 5px;
+    border-radius: 6px;
+}
+
+.search_bar {
+    width: 40%;
+    padding: 5px;
+    border-radius: 6px;
+}
+
+.search_space {
+    padding: 15% 0 15% 0;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+// menu components
 .menu_bar {
     /* border-radius: 5px; */
     border: 20;
@@ -26,3 +48,26 @@ $lighter_object_color: #989898;
 .menu_bar_component:hover {
     background-color: $lighter_object_color;
 }
+
+// advanced search space components
+.adv_search_header{
+    text-align: left;
+    font-size: large;
+    padding: 0 15em 1.5em 0;
+}
+
+.adv_search_bar {
+    text-align: left;
+    padding: 0 15em 0 0;
+}
+
+.adv_search_button {
+    padding: 5px;
+    border-radius: 6px;
+    background-color: rgb(44, 86, 204);
+    color: white;
+}
+// .adv_search_bar input {
+//     text-align: right;
+//     padding: 0 0 0 15em;
+// }
