@@ -1,0 +1,28 @@
+
+$light_object_color: #A9A9A9;
+$lighter_object_color: #989898;
+
+.menu_bar {
+    /* border-radius: 5px; */
+    border: 20;
+    background-color: aqua;
+    text-align: right;
+    margin: 20px;
+}
+
+.menu_bar_component {
+    float: right;
+    padding: 5px;
+    border-radius: 6px;
+    background-color: $light_object_color;
+    margin: 0px 10px 0px 10px;
+}
+
+.menu_bar_component a {
+    color: black;
+    text-decoration: none;
+}
+
+.menu_bar_component:hover {
+    background-color: $lighter_object_color;
+}
