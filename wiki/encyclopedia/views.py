@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+import random
 
 from . import util
 
@@ -53,3 +54,17 @@ def create_new_page(request):
         })
     else:
         return render(request, "encyclopedia/create_new_page.html")
+
+
+def random_page(request):
+    entries = util.list_entries()
+    page_ind = random.randint(0,len(entries))-1
+    print(page_ind)
+    title = entries[page_ind]
+    body = util.get_entry(title)
+    return render(request, "encyclopedia/page.html", {
+        "title": title,
+        "page": body
+    })
+
+
