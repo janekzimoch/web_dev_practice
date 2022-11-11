@@ -1,0 +1,12 @@
+
+
+.enter_page_body {
+    width: 50%;
+    height: 10%;
+    min-width: 600px;
+    min-height: 100px;
+}
+
+.form_label {
+    padding: 5px;
+}

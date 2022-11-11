@@ -35,5 +35,21 @@ def search(request):
         return render(request, "encyclopedia/related_pages.html", {
             "releted_entries": releted_entries
         })
+    else:
+        return render(request, "encyclopedia/page_not_found.html")
 
-    print(searched_page)
+def create_new_page(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        body = request.POST['body']
+        existing_entries = util.list_entries()
+        if title in existing_entries:
+            return render(request, "encyclopedia/error.html")
+        # save page
+        util.save_entry(title, body)
+        return render(request, "encyclopedia/page.html", {
+            "title": title,
+            "page": body
+        })
+    else:
+        return render(request, "encyclopedia/create_new_page.html")
