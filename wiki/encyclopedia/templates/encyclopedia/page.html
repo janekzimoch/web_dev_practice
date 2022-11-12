@@ -7,4 +7,7 @@
 
 {% block body %}
     {{ page|markdownify }}
+    <form action="{% url 'edit_page' title=title %}">
+      <input type="submit" value="Edit">
+    </form>
 {% endblock %}

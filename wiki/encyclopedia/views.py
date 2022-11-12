@@ -55,6 +55,21 @@ def create_new_page(request):
     else:
         return render(request, "encyclopedia/create_new_page.html")
 
+def edit_page(request, title):
+    page = util.get_entry(title)
+    if request.method == 'POST':
+        page = request.POST['body']
+        util.save_entry(title, page)
+        return render(request, "encyclopedia/page.html", {
+            "title": title,
+            "page": page
+        })
+    else:
+        return render(request, "encyclopedia/edit.html", {
+            "title": title,
+            "page": page
+        })
+
 
 def random_page(request):
     entries = util.list_entries()
