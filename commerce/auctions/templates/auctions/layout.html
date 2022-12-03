@@ -4,11 +4,13 @@
 <html lang="en">
     <head>
         <title>{% block title %}Auctions{% endblock %}</title>
+        {% block scripts %}{% endblock %}
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
+        <link  rel="stylesheet" href="{% static 'auctions/styles.css' %}">
+        <link rel="stylesheet" href="/Users/janek/Coding/PersonalProjects/web_dev_practice/commerce/auctions/static/auctions/styles.css">
     </head>
     <body>
-        <h1>Auctions</h1>
+        <h1 class="test">Auctions</h1>
         <div>
             {% if user.is_authenticated %}
                 Signed in as <strong>{{ user.username }}</strong>.
@@ -21,9 +23,12 @@
                 <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
             </li>
             {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
-                </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'my_listings' %}">My Listings</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+              </li>
             {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'login' %}">Log In</a>

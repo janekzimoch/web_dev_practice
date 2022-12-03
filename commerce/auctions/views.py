@@ -7,16 +7,29 @@ from django import forms
 
 
 from .models import User
-
-class AuctionForm(forms.Form):
-    name = forms.CharField(label="Item nam")
-    description = forms.CharField(label="description of the item")
-    owner = forms.CharField(label="Owner of a listing")
+from .models import Listing
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    listings = Listing.objects.all()
+    return render(request, "auctions/index.html", {
+        "listings": listings,
+    })
 
+def my_listings(request):
+    """ The same as index() however listis only your listings """
+    listings = []
+    user = str(request.user)
+    for l in Listing.objects.all():
+        if user == l.username:
+            listings.append(l)
+    return render(request, "auctions/index.html", {
+        "listings": listings,
+    })
+
+def delete_listing(request, id):
+    Listing.objects.filter(id=id).delete()
+    return HttpResponseRedirect(reverse("index"))
 
 def login_view(request):
     if request.method == "POST":
@@ -72,8 +85,14 @@ def register(request):
 
 def add_listing(request):
     if request.method == 'POST':
-        pass
+        listing = Listing(
+            username = request.user,
+            title = request.POST["title"],
+            description = request.POST["description"],
+            bid = request.POST["bid"],
+            img_url = request.POST["img_url"],
+        )
+        listing.save()
+        return HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "auctions/add_listing.html", {
-            "form": AuctionForm()
-        })
+        return render(request, "auctions/add_listing.html")

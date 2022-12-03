@@ -4,16 +4,20 @@ from django.db import models
 
 class User(AbstractUser):
     # a watchlist of suctions - add ids
-
     # ids of auctions user is bidding and how much is he bidding
     pass
 
-class Auction(models.Model):
-    name = models.CharField(max_length=64)
+class Listing(models.Model):
+    username = models.CharField(max_length=64)
+    title = models.CharField(max_length=64)
     description = models.CharField(max_length=256)
-    bid = models.IntegerField(default=0)
-    bidder = models.CharField(max_length=64)
-    owner = models.CharField(max_length=64)
+    bid = models.FloatField(default=0)
+    img_url = models.CharField(max_length=512)
+
+    def __str__(self):
+        return f"Owner: {self.username}; item: {self.title}, descirption: {self.description}"
+    # bidder = models.CharField(max_length=64)
+    # owner = models.CharField(max_length=64)
     # img = models.ImageField()  # may require a python liblary
 
 

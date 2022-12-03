@@ -1,3 +1,14 @@
 body {
+    padding: 20px;
+}
+
+.listing {
+    background-color: #d0d0d0;
+    border: 2px;
+    border-style: solid;
+    border-radius: 6px;
+    min-width: 400px;
+    min-height: 200px;
     padding: 10px;
+    margin: 20px;
 }

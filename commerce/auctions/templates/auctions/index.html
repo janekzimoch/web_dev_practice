@@ -1,12 +1,40 @@
 {% extends "auctions/layout.html" %}
 
+{% block scripts %}
+  <script>
+    let counter = 0;
+    function delete_listing() {
+        counter++;
+        alert(counter);
+    }
+  </script>
+{% endblock %}
+
+
 {% block body %}
+
     {% if user.is_authenticated %}
       <form action="{% url 'add_listing' %}">
         <input type="submit" value="Add Listing">
       </form>
     {% endif %}
-    <h2>Active Listings</h2>
 
-    TODO
+    <h2>Active Listings</h2>
+    {% for listing in listings %}
+      <div class="listing">
+        <!-- here create the listing display -->
+        <h1>{{ listing.title }}</h1>
+        <h2>Current bid: {{ listing.bid }}$</h2>
+        <h2>Description:</h2>
+        <p>{{ listing.description }}</p>
+
+        {% if listing.username == user.username %}
+        <form action="{% url 'delete_listing' id=listing.id %}">
+          <input type="submit" value="Delete" class="form-control">
+        </form>
+        {% endif %}
+
+      </div>
+    {% endfor %}
+
 {% endblock %}
