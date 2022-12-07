@@ -27,6 +27,12 @@ def my_listings(request):
         "listings": listings,
     })
 
+def listing(request, id):
+    listing = Listing.objects.get(id=id)
+    return render(request, "auctions/listing.html", {
+        "listing": listing
+    })
+
 def delete_listing(request, id):
     Listing.objects.filter(id=id).delete()
     return HttpResponseRedirect(reverse("index"))

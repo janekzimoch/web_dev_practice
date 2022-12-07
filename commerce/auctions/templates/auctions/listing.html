@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+
+{% block scripts %}
+  <!-- <script>
+    // 
+  </script> -->
+{% endblock %}
+
+
+{% block body %}
+  <div id="{{ listing.id }}" class="listing">
+    <p>{{ listing.id }}</p>
+    <!-- here create the listing display -->
+    <h1>{{ listing.title }}</h1>
+    <h2>Current bid: {{ listing.bid }}$</h2>
+    <h2>Description:</h2>
+    <p>{{ listing.description }}</p>
+    {% if listing.img_url != '' %}
+      <img class="image" src="{{ listing.img_url }}" alt="Wrong file url">
+    {% endif %}
+    {% if listing.username == user.username %}
+    <form action="{% url 'delete_listing' id=listing.id %}">
+      <input class="button" type="submit" value="Delete this listing" class="form-control">
+    </form>
+    {% endif %}
+  </div>
+{% endblock %}

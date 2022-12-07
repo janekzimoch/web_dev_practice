@@ -1,13 +1,27 @@
 {% extends "auctions/layout.html" %}
 
 {% block scripts %}
-  <script>
-    let counter = 0;
-    function delete_listing() {
-        counter++;
-        alert(counter);
-    }
-  </script>
+  <!-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.listing').forEach(listing => {
+            listing.onclick = function() {
+                const id = this.id;
+                console.log(id)
+                if (id != '') {
+                  // window.location.replace("{% url 'listing' id=16 %}");
+                  // window.location.replace("{% url 'listing' id=16 %}");
+                }
+            };
+        });
+    });
+
+    // function go_to_listing() {
+    //   console.log("test");
+    //   console.log(this.target.id);
+    //   window.location.href = "{% url 'my_listings' %}";
+    // }
+  </script> 
+ onclick="go_to_listing()"-->
 {% endblock %}
 
 
@@ -21,16 +35,22 @@
 
     <h2>Active Listings</h2>
     {% for listing in listings %}
-      <div class="listing">
-        <!-- here create the listing display -->
-        <h1>{{ listing.title }}</h1>
-        <h2>Current bid: {{ listing.bid }}$</h2>
-        <h2>Description:</h2>
-        <p>{{ listing.description }}</p>
-
+      <div class="listing contain_link">
+        <a class="span" href="{% url 'listing' id=listing.id %}"><span></span></a>
+        <div id="{{ listing.id }}"> 
+          <p>{{ listing.id }}</p>
+          <!-- here create the listing display -->
+          <h1>{{ listing.title }}</h1>
+          <h2>Current bid: {{ listing.bid }}$</h2>
+          <h2>Description:</h2>
+          <p>{{ listing.description }}</p>
+          {% if listing.img_url != '' %}
+            <img class="image" src="{{ listing.img_url }}" alt="Wrong file url">
+          {% endif %}
+        </div>
         {% if listing.username == user.username %}
-        <form action="{% url 'delete_listing' id=listing.id %}">
-          <input type="submit" value="Delete" class="form-control">
+        <form class="outside_span" action="{% url 'delete_listing' id=listing.id %}">
+          <input class="button" type="submit" value="Delete this listing" class="form-control">
         </form>
         {% endif %}
 
