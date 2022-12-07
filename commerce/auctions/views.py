@@ -8,6 +8,7 @@ from django import forms
 
 from .models import User
 from .models import Listing
+from .models import Watchlist
 
 
 def index(request):
@@ -26,12 +27,31 @@ def my_listings(request):
     return render(request, "auctions/index.html", {
         "listings": listings,
     })
+    
+
+def my_watchlist(request):
+    listings = []
+    watched_listings = request.user.watched_listings.all()
+    for w in watched_listings:
+        listing = Listing.objects.get(id=w.listing.id)
+        listings.append(listing)
+    return render(request, "auctions/index.html", {
+        "listings": listings,
+    })
 
 def listing(request, id):
     listing = Listing.objects.get(id=id)
     return render(request, "auctions/listing.html", {
         "listing": listing
     })
+
+def add_to_watchlist(request, id):
+    user = request.user
+    listing = Listing.objects.get(id=id)
+    watching_event = Watchlist(user=user, listing=listing)
+    watching_event.save()
+    return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
+
 
 def delete_listing(request, id):
     Listing.objects.filter(id=id).delete()

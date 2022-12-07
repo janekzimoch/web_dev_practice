@@ -16,20 +16,10 @@ class Listing(models.Model):
 
     def __str__(self):
         return f"Owner: {self.username}; item: {self.title}, descirption: {self.description}"
-    # bidder = models.CharField(max_length=64)
-    # owner = models.CharField(max_length=64)
-    # img = models.ImageField()  # may require a python liblary
 
-
-
-    # history of bids - or at least the latest bid value
-
-    # names of people bidding
-    # image of an item - by defult could go to some placeholder ("no image  provided")
-    # name of the item
-    # category fo the item
-    # description of the item
-    # comments for the acution
+class Watchlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='watched_listings')
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='watching_users')
 
 
 class Bid():

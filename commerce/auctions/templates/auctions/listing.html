@@ -19,9 +19,14 @@
       <img class="image" src="{{ listing.img_url }}" alt="Wrong file url">
     {% endif %}
     {% if listing.username == user.username %}
-    <form action="{% url 'delete_listing' id=listing.id %}">
-      <input class="button" type="submit" value="Delete this listing" class="form-control">
-    </form>
+      <form action="{% url 'delete_listing' id=listing.id %}">
+        <input class="button" type="submit" value="Delete this listing" class="form-control">
+      </form>
+    {% endif %}
+    {% if user.is_authenticated %}
+      <form action="{% url 'add_to_watchlist' id=listing.id %}">
+        <input class="button" type="submit" value="Add to watchlist" class="form-control">
+      </form>
     {% endif %}
   </div>
 {% endblock %}

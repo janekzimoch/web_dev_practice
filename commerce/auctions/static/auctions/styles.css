@@ -25,6 +25,7 @@ body {
   
 .outside_span {
     z-index: 2;
+    position:relative
 }
 .span { 
     position:absolute; 

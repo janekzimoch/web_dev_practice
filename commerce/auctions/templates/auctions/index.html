@@ -49,6 +49,9 @@
           {% endif %}
         </div>
         {% if listing.username == user.username %}
+        <p>
+          {{ listing }}
+        </p>
         <form class="outside_span" action="{% url 'delete_listing' id=listing.id %}">
           <input class="button" type="submit" value="Delete this listing" class="form-control">
         </form>
