@@ -27,7 +27,6 @@ def my_listings(request):
     return render(request, "auctions/index.html", {
         "listings": listings,
     })
-    
 
 def my_watchlist(request):
     listings = []
@@ -39,11 +38,23 @@ def my_watchlist(request):
         "listings": listings,
     })
 
-def listing(request, id):
+def _is_in_watchlist(request, id):
+    try:
+        listing = Listing.objects.get(id=id)
+        watched_listing = request.user.watched_listings.get(listing=listing)
+    except Watchlist.DoesNotExist:
+        watched_listing = None
+    if watched_listing is None:
+        return False
+    else:
+        return True
+
+def remove_from_watchlist(request, id):
+    watched_listings = request.user.watched_listings.all()
     listing = Listing.objects.get(id=id)
-    return render(request, "auctions/listing.html", {
-        "listing": listing
-    })
+    watched_listing = watched_listings.get(listing=listing)
+    watched_listing.delete()
+    return HttpResponseRedirect(reverse("index"))
 
 def add_to_watchlist(request, id):
     user = request.user
@@ -51,6 +62,16 @@ def add_to_watchlist(request, id):
     watching_event = Watchlist(user=user, listing=listing)
     watching_event.save()
     return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
+
+def listing(request, id):
+    listing = Listing.objects.get(id=id)
+    is_in_watchlist_bool = _is_in_watchlist(request, id)
+    return render(request, "auctions/listing.html", {
+        "listing": listing,
+        "is_in_watchlist": is_in_watchlist_bool
+    })
+
+
 
 
 def delete_listing(request, id):
