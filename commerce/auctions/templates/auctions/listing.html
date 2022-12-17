@@ -1,38 +1,54 @@
 {% extends "auctions/layout.html" %}
 
 {% block scripts %}
-  <!-- <script>
-    // 
-  </script> -->
+  <script>
+    function min_not_equal(bid) {
+      return bid + 0.01
+    }
+  </script>
 {% endblock %}
 
 
 {% block body %}
   <div id="{{ listing.id }}" class="listing">
-    <p>{{ listing.id }}</p>
-    <!-- here create the listing display -->
-    <h1>{{ listing.title }}</h1>
-    <h2>Current bid: {{ listing.bid }}$</h2>
-    <h2>Description:</h2>
-    <p>{{ listing.description }}</p>
+    <div class="listingLHS"> 
     {% if listing.img_url != '' %}
       <img class="image" src="{{ listing.img_url }}" alt="Wrong file url">
     {% endif %}
-    {% if listing.username == user.username %}
-      <form action="{% url 'delete_listing' id=listing.id %}">
-        <input class="button" type="submit" value="Delete this listing" class="form-control">
-      </form>
-    {% endif %}
-    {% if user.is_authenticated %}
-      {% if is_in_watchlist %}
-        <form action="{% url 'remove_from_watchlist' id=listing.id %}">
-          <input class="button" type="submit" value="Remove from watchlist" class="form-control">
-        </form>
-      {% else %}
-        <form action="{% url 'add_to_watchlist' id=listing.id %}">
-          <input class="button" type="submit" value="Add to watchlist" class="form-control">
+    </div>
+
+    <div lass="listingRHS"> 
+      <p>{{ listing.id }}</p>
+      <!-- here create the listing display -->
+      <h1>{{ listing.title }}</h1>
+      <h2>Current bid: {{ listing.bid }}$</h2>
+      <h2>Description:</h2>
+      <p>{{ listing.description }}</p>
+      {% if user.is_authenticated %}
+        <form class="margin" action="{% url 'bid' id=listing.id %}" method="post">
+          {% csrf_token %}
+          <input class="form-control" type="number" min="{{ min_bid }}" step="0.01" name="bid" placeholder="Current bid {{ listing.bid }}"/>
+          <input class="button_bid" type="submit" value="Bid" class="form-control"/>
         </form>
       {% endif %}
-    {% endif %}
+      {% if listing.username == user.username %}
+        <form action="{% url 'delete_listing' id=listing.id %}">
+          <input class="button" type="submit" value="Delete this listing" class="form-control">
+        </form>
+      {% endif %}
+      {% if user.is_authenticated %}
+        
+        {% if is_in_watchlist %}
+          <form action="{% url 'remove_from_watchlist' id=listing.id %}">
+            <input class="button" type="submit" value="Remove from watchlist" class="form-control">
+          </form>
+        {% else %}
+          <form action="{% url 'add_to_watchlist' id=listing.id %}">
+            <input class="button" type="submit" value="Add to watchlist" class="form-control">
+          </form>
+        {% endif %}
+      {% endif %}
+    </div>
+    
   </div>
 {% endblock %}

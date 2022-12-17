@@ -28,6 +28,18 @@ def my_listings(request):
         "listings": listings,
     })
 
+def my_biddings(request):
+    listings = []
+    biddings = request.user.my_biddings.all()
+    for listing in biddings:
+        print(listing.username)
+        print(listing.bidder)
+        if str(listing.username) != str(listing.bidder):
+            listings.append(listing)
+    return render(request, "auctions/index.html", {
+        "listings": listings,
+    })
+
 def my_watchlist(request):
     listings = []
     watched_listings = request.user.watched_listings.all()
@@ -68,11 +80,17 @@ def listing(request, id):
     is_in_watchlist_bool = _is_in_watchlist(request, id)
     return render(request, "auctions/listing.html", {
         "listing": listing,
+        "min_bid": listing.bid + 0.01,
         "is_in_watchlist": is_in_watchlist_bool
     })
 
-
-
+def bid(request, id):
+    bid = request.POST['bid']
+    listing = Listing.objects.get(id=id)
+    listing.bidder = request.user
+    listing.bid = bid
+    listing.save()
+    return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
 
 def delete_listing(request, id):
     Listing.objects.filter(id=id).delete()
@@ -136,8 +154,9 @@ def add_listing(request):
             username = request.user,
             title = request.POST["title"],
             description = request.POST["description"],
-            bid = request.POST["bid"],
             img_url = request.POST["img_url"],
+            bid = request.POST["bid"],
+            bidder = request.user  # note we need to initiate as owner (even thou he is not a bidder), because we can't set a default to anything meanigful.
         )
         listing.save()
         return HttpResponseRedirect(reverse("index"))

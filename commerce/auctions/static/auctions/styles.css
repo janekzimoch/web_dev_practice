@@ -11,10 +11,29 @@ body {
     min-height: 200px;
     padding: 10px;
     margin: 20px;
+    display: flex;
+}
+
+.listingLHS {
+    height: 100%;
+    padding: 0 2em 0 0;
+}
+
+.listingRHS {
+    height: 100%;
 }
 
 .button {
     width: 280px;
+    margin: 10px;
+}
+
+.button_bid {
+    width: 80px;
+    margin: 10px;
+}
+
+.margin {
     margin: 10px;
 }
 

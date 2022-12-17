@@ -11,6 +11,7 @@ class Listing(models.Model):
     username = models.CharField(max_length=64)
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=256)
+    bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name='my_biddings')
     bid = models.FloatField(default=0)  # ensure this is a float
     img_url = models.CharField(max_length=512)
 
@@ -22,10 +23,7 @@ class Watchlist(models.Model):
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='watching_users')
 
 
-class Bid():
-    # bid value
-    # person makign bid
-    pass
+
 
 class Comments():
     # comment content
