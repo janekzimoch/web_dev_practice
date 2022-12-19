@@ -9,45 +9,75 @@ from django import forms
 from .models import User
 from .models import Listing
 from .models import Watchlist
+from .models import Category
 
+def _apply_category(request, listings):
+    if request.method == 'POST' and request.POST['category'] != 'All':
+        print(request.POST.get('listings'))
+        print('123')
+        sel_cat = request.POST['category']
+        list_ = Category.objects.filter(category=sel_cat).values_list('listing', flat=True)
+        listings = listings.filter(id__in=list_)
+    else:
+        sel_cat = 'All'
+        listings = listings.all()
+    return listings, sel_cat
 
 def index(request):
+    categories = Category.objects.all()
+    # print(request.context.listings)
     listings = Listing.objects.all()
+    listings, sel_cat = _apply_category(request, listings)
     return render(request, "auctions/index.html", {
         "listings": listings,
+        "sel_cat": sel_cat,
+        "view_type": 'index',
+        "categories": categories,
     })
 
 def my_listings(request):
     """ The same as index() however listis only your listings """
-    listings = []
     user = str(request.user)
-    for l in Listing.objects.all():
-        if user == l.username:
-            listings.append(l)
+    categories = Category.objects.all()
+    listings = Listing.objects.filter(username=user)
+    print(listings)
+    listings, sel_cat = _apply_category(request, listings)
+    print(listings)
     return render(request, "auctions/index.html", {
         "listings": listings,
+        "sel_cat": sel_cat,
+        "view_type": 'my_listings',
+        "categories": categories,
     })
 
 def my_biddings(request):
     listings = []
     biddings = request.user.my_biddings.all()
     for listing in biddings:
-        print(listing.username)
-        print(listing.bidder)
         if str(listing.username) != str(listing.bidder):
             listings.append(listing)
+    listings, sel_cat = _apply_category(request, listings)
+    categories = Category.objects.all()        
     return render(request, "auctions/index.html", {
         "listings": listings,
+        "sel_cat": sel_cat,
+        "view_type": 'my_biddings',
+        "categories": categories,
     })
 
 def my_watchlist(request):
     listings = []
-    watched_listings = request.user.watched_listings.all()
-    for w in watched_listings:
-        listing = Listing.objects.get(id=w.listing.id)
-        listings.append(listing)
+    watched_listings_ids = request.user.watched_listings.all().values_list('listing', flat=True)
+    listings = Listing.objects.filter(id__in=watched_listings_ids)
+    print(listings)
+    listings, sel_cat = _apply_category(request, listings)
+    print(listings)
+    categories = Category.objects.all()
     return render(request, "auctions/index.html", {
         "listings": listings,
+        "sel_cat": sel_cat,
+        "view_type": 'my_watchlist',
+        "categories": categories,
     })
 
 def _is_in_watchlist(request, id):
@@ -77,11 +107,15 @@ def add_to_watchlist(request, id):
 
 def listing(request, id):
     listing = Listing.objects.get(id=id)
+    categories = listing.listings_categories.all()
+    print(listing)
+    print(categories)
     is_in_watchlist_bool = _is_in_watchlist(request, id)
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "min_bid": listing.bid + 0.01,
-        "is_in_watchlist": is_in_watchlist_bool
+        "is_in_watchlist": is_in_watchlist_bool,
+        "categories": categories,
     })
 
 def bid(request, id):
@@ -156,9 +190,18 @@ def add_listing(request):
             description = request.POST["description"],
             img_url = request.POST["img_url"],
             bid = request.POST["bid"],
-            bidder = request.user  # note we need to initiate as owner (even thou he is not a bidder), because we can't set a default to anything meanigful.
+            bidder = request.user
+          # note we need to initiate as owner (even thou he is not a bidder), because we can't set a default to anything meanigful.
         )
         listing.save()
+        print(request.POST["categories"])
+        print(request.POST["categories"].split(', '))
+        for cat in request.POST["categories"].split(', '):
+            category = Category(
+                listing = listing,
+                category = cat
+            )
+            category.save()
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/add_listing.html")

@@ -18,6 +18,10 @@ class Listing(models.Model):
     def __str__(self):
         return f"Owner: {self.username}; item: {self.title}, descirption: {self.description}"
 
+class Category(models.Model):
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='listings_categories')
+    category = models.CharField(max_length=256)
+
 class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='watched_listings')
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='watching_users')

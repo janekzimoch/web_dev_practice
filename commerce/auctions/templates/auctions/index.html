@@ -32,8 +32,18 @@
         <input type="submit" value="Add Listing">
       </form>
     {% endif %}
-
+    <form action="{% url view_type %}" method="post">
+      {% csrf_token %}
+      <label for="category">Filter by category:</label>
+      <select onchange="this.form.submit()" name="category" id="category">
+        <option value="All" {% if sel_cat == All %}selected{% endif %}>All</option>
+        {% for cat in categories %}
+          <option value="{{ cat.category }}" {% if sel_cat == cat.category %}selected{% endif %}>{{ cat.category }}</option>
+        {% endfor %}
+      </select>
+    </form>
     <h2>Active Listings</h2>
+    
     {% for listing in listings %}
       <div class="listing contain_link">
         <a class="span" href="{% url 'listing' id=listing.id %}"><span></span></a>
