@@ -58,15 +58,31 @@ async function display_email_full(id) {
   const frame = document.createElement('div');
   frame.innerHTML = `
   <div class="email border m-1">
-    <div class="email-sender">From: ${email.sender}</div>
-    <div class="email-sender">To: ${email.recipients.join(', ')}</div>
-    <div class="email-title">Subject: ${email.subject}</div>
-    <div class="email-date">${email.timestamp}</div>
+    <div>
+      <span class="email-sender">From: </span>
+      <span>${email.sender}</span>
+      <span class="email-date">${email.timestamp}</span>
+    </div>
+    <div>
+      <span class="email-sender">To: </span>
+      <span>${email.recipients.join(', ')}</span>
+    </div>
+    <div>
+      <span class="email-sender">Subject: </span>
+      <span class="email-title">${email.subject}</span>
+    </div>
     <div class="body">${email.body}</div>
   </div>`;
   document.querySelector('#single_email-view').innerHTML = '';
   document.querySelector('#single_email-view').append(frame);
 
+  // send PUT request to mark email as read
+  fetch(`/emails/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+        read: true
+    })
+  })
 
   // Show single email and hide other views
   document.querySelector('#emails-view').style.display = 'none';

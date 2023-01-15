@@ -23,6 +23,7 @@ textarea {
 
 .email-date{
     text-align: right;
+    float: right;
 }
 
 .email-link, .email-link:hover{
