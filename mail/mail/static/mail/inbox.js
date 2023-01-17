@@ -1,11 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
-
   // By default, load the inbox
   load_mailbox('inbox');
 });
@@ -16,7 +14,6 @@ function send_email(){
   const recipients = document.querySelector('#compose-recipients').value;
   const subject = document.querySelector('#compose-subject').value;
   const body = document.querySelector('#compose-body').value;
-
   // save the sent email
   fetch('/emails', {
     method: 'POST',
@@ -49,11 +46,21 @@ function compose_email() {
 }
 
 
+function toggle_archived(id, archived) {
+  fetch(`/emails/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      archived: !archived
+    })
+  })
+  load_mailbox('inbox')
+}
+
+
 async function display_email_full(id) {
   // fetch data
   const email = await fetch(`/emails/${id}`).then(response => response.json()); //.then(email => {return email});
   console.log(`This element has been clicked! ${email.id}`)
-
   // create component
   const frame = document.createElement('div');
   frame.innerHTML = `
@@ -75,7 +82,6 @@ async function display_email_full(id) {
   </div>`;
   document.querySelector('#single_email-view').innerHTML = '';
   document.querySelector('#single_email-view').append(frame);
-
   // send PUT request to mark email as read
   fetch(`/emails/${id}`, {
     method: 'PUT',
@@ -83,6 +89,21 @@ async function display_email_full(id) {
         read: true
     })
   })
+
+  // if email received show archieve/unarchieve button
+  console.log(email.sender, email.recipients[0])
+  if (email.sender != email.recipients[0]) {
+    const archive_button = document.createElement('button');
+    archive_button.className = "btn btn-sm btn-outline-primary";
+    if (email.archived) {
+      archive_button.innerHTML = 'Unarchive';
+    }
+    else {
+      archive_button.innerHTML = 'Archive';
+    }
+    archive_button.addEventListener('click', () => toggle_archived(email.id, email.archived));
+    document.querySelector('#single_email-view').append(archive_button);
+  }
 
   // Show single email and hide other views
   document.querySelector('#emails-view').style.display = 'none';
