@@ -28,15 +28,15 @@ function send_email(){
 }
 
 
-function compose_email() {
+function compose_email(recipients=[], subject='', body='') {
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#single_email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
   // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+  document.querySelector('#compose-recipients').value = [...recipients].join(', ');
+  document.querySelector('#compose-subject').value = subject;
+  document.querySelector('#compose-body').value = body;
   // Turn off default button send behaviour
   document.querySelector('#compose-form').addEventListener("submit", function(evt){
     evt.preventDefault();
@@ -57,10 +57,21 @@ function toggle_archived(id, archived) {
 }
 
 
+function reply(email) {
+  let recipients = new Set(email.recipients);
+  recipients.add(email.sender);
+  let subject = email.subject;
+  let body = `\n\n On ${email.timestamp} ${email.sender} sent:\n ${email.body}`
+  if (!subject.includes('Re:')) {
+    subject = 'Re: ' + subject
+  }
+  compose_email(recipients=recipients, subject=subject, body=body)
+}
+
+
 async function display_email_full(id) {
   // fetch data
   const email = await fetch(`/emails/${id}`).then(response => response.json()); //.then(email => {return email});
-  console.log(`This element has been clicked! ${email.id}`)
   // create component
   const frame = document.createElement('div');
   frame.innerHTML = `
@@ -90,8 +101,15 @@ async function display_email_full(id) {
     })
   })
 
+  const button_frame = document.createElement('div');
+  // reply button 
+  const reply_button = document.createElement('button');
+  reply_button.className = "btn btn-sm btn-outline-primary";
+  reply_button.innerHTML = 'Reply';
+  reply_button.addEventListener('click', () => reply(email));
+  button_frame.append(reply_button)
+
   // if email received show archieve/unarchieve button
-  console.log(email.sender, email.recipients[0])
   if (email.sender != email.recipients[0]) {
     const archive_button = document.createElement('button');
     archive_button.className = "btn btn-sm btn-outline-primary";
@@ -102,8 +120,9 @@ async function display_email_full(id) {
       archive_button.innerHTML = 'Archive';
     }
     archive_button.addEventListener('click', () => toggle_archived(email.id, email.archived));
-    document.querySelector('#single_email-view').append(archive_button);
+    button_frame.append(archive_button)
   }
+  document.querySelector('#single_email-view').append(button_frame);
 
   // Show single email and hide other views
   document.querySelector('#emails-view').style.display = 'none';
