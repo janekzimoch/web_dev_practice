@@ -30,11 +30,11 @@
           <input class="form-control" type="number" min="{{ min_bid }}" step="0.01" name="bid" placeholder="Current bid {{ listing.bid }}"/>
           <input class="button_bid" type="submit" value="Bid" class="form-control"/>
         </form>
-      {% endif %}
-      {% if listing.username == user.username %}
-        <form action="{% url 'delete_listing' id=listing.id %}">
-          <input class="button" type="submit" value="Delete this listing" class="form-control">
-        </form>
+        {% if listing.username == user.username %}
+          <form action="{% url 'delete_listing' id=listing.id %}">
+            <input class="button" type="submit" value="Delete this listing" class="form-control">
+          </form>
+        {% endif %}
       {% endif %}
       {% if user.is_authenticated %}
         

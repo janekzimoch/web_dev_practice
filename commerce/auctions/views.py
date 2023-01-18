@@ -110,7 +110,11 @@ def listing(request, id):
     categories = listing.listings_categories.all()
     print(listing)
     print(categories)
-    is_in_watchlist_bool = _is_in_watchlist(request, id)
+    print(request.user.id)
+    if request.user.id == None:
+        is_in_watchlist_bool = False
+    else:
+        is_in_watchlist_bool = _is_in_watchlist(request, id)
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "min_bid": listing.bid + 0.01,
