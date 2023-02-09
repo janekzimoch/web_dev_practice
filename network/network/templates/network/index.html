@@ -1,5 +1,30 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+    <div id="page_title">
+    </div>
+
+    
+
+    {% if user.is_authenticated %}
+    <div class="write_post">
+      <h4>Write New Post</h4>
+      <form action="{% url 'send_post' %}" method="post">
+        {% csrf_token %}
+        <textarea class="margin form-control" id="compose-body" name="text_body" placeholder="Body"></textarea>
+        <input type="submit" id='send_post' class="btn margin btn-primary"/>
+      </form>
+    </div>
+    {% endif %}
+
+
+    <div class="top_spacing" id="all_posts-view">
+      <h4>Posts:</h4>
+      {% for id, post in posts.items %}
+        <div class="post">
+          <h3>By: {{ post.author }}</h3>
+          <p>{{ post.text_body }}</p>
+        </div>
+      {% endfor %}
+    </div>
 {% endblock %}
