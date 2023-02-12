@@ -7,4 +7,14 @@ class User(AbstractUser):
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='users_posts')
+    text_title = models.TextField()
     text_body = models.TextField()
+    time_published = models.CharField(max_length=32)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "text_title": self.text_title,
+            "text_body": self.text_body,
+            "time_published": self.time_published,
+        }

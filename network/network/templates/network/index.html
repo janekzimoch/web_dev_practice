@@ -4,27 +4,22 @@
     <div id="page_title">
     </div>
 
-    
-
-    {% if user.is_authenticated %}
-    <div class="write_post">
-      <h4>Write New Post</h4>
-      <form action="{% url 'send_post' %}" method="post">
-        {% csrf_token %}
-        <textarea class="margin form-control" id="compose-body" name="text_body" placeholder="Body"></textarea>
-        <input type="submit" id='send_post' class="btn margin btn-primary"/>
-      </form>
-    </div>
-    {% endif %}
-
-
-    <div class="top_spacing" id="all_posts-view">
+    <div id="all_posts-view" class="center">
       <h4>Posts:</h4>
       {% for id, post in posts.items %}
-        <div class="post">
-          <h3>By: {{ post.author }}</h3>
-          <p>{{ post.text_body }}</p>
+        <div class="card w-100" style="width: 18rem;">
+          <div class="card-body">
+            <span>
+              <h6 class="card-subtitle mb-2 text-muted" style="display: inline;">By: {{ post.author }} </h6>
+              <h6 class="card-subtitle mb-2 text-muted" style="display: inline; float: right">{{ post.time_published }}</h6>
+            </span>
+            <h5 class="card-title">{{ post.text_title }}</h5>
+            <p class="card-text">{{ post.text_body }}</p>
+            <a href="#" class="card-link">Follow</a>
+            <a href="/post/{{ id }}/like"  class="card-link">Like</a>
+            <a href="#" class="card-link" id="edit_post_{{ id }}" name="{{ id }}">Edit</a>
+          </div>
         </div>
       {% endfor %}
-    </div>
+  </div>
 {% endblock %}
