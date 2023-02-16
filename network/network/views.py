@@ -9,6 +9,8 @@ from .models import Post
 
 from time import gmtime, strftime
 import numpy as np
+import json
+
 
 def index(request):
     posts_per_page = 10
@@ -99,9 +101,14 @@ def send_post(request,):
     return HttpResponseRedirect(reverse("index"))
 
 def like_post(request, post_id):
+    # note: users_liked is written to store User objects not id strings, so we need to get a User object from Id string in django
     if request.method == "PUT":
-        print(post_id)
-        print('put')
+        data = json.loads(request.body)
+        new_user_like = User.objects.get(id = data['user_id'])
+        post = Post.objects.get(id = post_id)
+        post.users_liked.add(new_user_like)
+        num_likes = len(post.users_liked.all())
+        return JsonResponse({"num_likes": num_likes}, status=302)#HttpResponseRedirect(reverse("index"))
     else:
         return JsonResponse({"error": "PUT request required."}, status=400)
 
