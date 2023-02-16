@@ -106,9 +106,15 @@ def like_post(request, post_id):
         data = json.loads(request.body)
         new_user_like = User.objects.get(id = data['user_id'])
         post = Post.objects.get(id = post_id)
-        post.users_liked.add(new_user_like)
+        print(post.users_liked.all())
+        if new_user_like in post.users_liked.all():
+            liked = False
+            post.users_liked.remove(new_user_like)
+        else:
+            liked = True
+            post.users_liked.add(new_user_like)
         num_likes = len(post.users_liked.all())
-        return JsonResponse({"num_likes": num_likes}, status=302)#HttpResponseRedirect(reverse("index"))
+        return JsonResponse({"num_likes": num_likes, "liked": liked}, status=302)#HttpResponseRedirect(reverse("index"))
     else:
         return JsonResponse({"error": "PUT request required."}, status=400)
 
