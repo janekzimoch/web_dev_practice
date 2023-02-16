@@ -22,7 +22,8 @@ def index(request):
         context['posts'][post.id] = {'author': post.user, 
                                      'time_published': post.time_published, 
                                      'text_body': post.text_body,
-                                     'text_title': post.text_title}
+                                     'text_title': post.text_title,
+                                     'num_likes': len(post.users_liked.all())}
     return render(request, "network/index.html", context)
 
 
@@ -97,11 +98,13 @@ def send_post(request,):
             post.save()
     return HttpResponseRedirect(reverse("index"))
 
-def edit_post(request, post_id):
-    # open modal view
-    # populate model view with existing data
-    print(post_id, request)
-    pass
+def like_post(request, post_id):
+    if request.method == "PUT":
+        print(post_id)
+        print('put')
+    else:
+        return JsonResponse({"error": "PUT request required."}, status=400)
+
 
 def get_post(request, post_id):
     try:
@@ -112,28 +115,4 @@ def get_post(request, post_id):
     if request.method == "GET":
         return JsonResponse(post.serialize())
 
-
-def get_posts(request, display_page):
-    if display_page == "all_posts":
-        posts = request.user.users_posts.all() #Post.objects.all()
-        print()
-    
-
-    # watched_listings_ids = request.user.watched_listings.all().values_list('listing', flat=True)
-    # listings = Listing.objects.filter(id__in=watched_listings_ids)
-    # print(listings)
-    # listings, sel_cat = _apply_category(request, listings)
-    # print(listings)
-    # categories = Category.objects.all()
-    # return render(request, "auctions/index.html", {
-    #     "listings": listings,
-    #     "sel_cat": sel_cat,
-    #     "view_type": 'my_watchlist',
-    #     "categories": categories,
-    # })
-
-    # # Return emails in reverse chronologial order
-    # emails = emails.order_by("-timestamp").all()
-    # return JsonResponse([email.serialize() for email in emails], safe=False)
-    # pass
 
