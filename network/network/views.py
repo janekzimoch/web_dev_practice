@@ -22,7 +22,7 @@ def index(request):
     for ind in sorted_inds:
         post = posts[ind]
         context['posts'][post.id] = {'author': post.user, 
-                                     'time_published': post.time_published, 
+                                     'time_published': post.time_published,
                                      'text_body': post.text_body,
                                      'text_title': post.text_title,
                                      'num_likes': len(post.users_liked.all())}
@@ -100,21 +100,32 @@ def send_post(request,):
             post.save()
     return HttpResponseRedirect(reverse("index"))
 
+def is_liked(data, post_id):
+    new_user_like = User.objects.get(id = data['user_id'])
+    post = Post.objects.get(id = post_id)        
+    if new_user_like in post.users_liked.all():
+        return True
+    else:
+        return False
+
+def like_post_get(request, post_id, user_id):
+    if request.method == "GET":
+        # data = request.GET #json.loads(request.GET)  # Get method doesn't have a body, but i need user_id. So you will need to create a seperate view. 
+        liked = is_liked({'user_id':user_id}, post_id)
+        return JsonResponse({"liked": liked}, status=302)
+
 def like_post(request, post_id):
-    # note: users_liked is written to store User objects not id strings, so we need to get a User object from Id string in django
     if request.method == "PUT":
         data = json.loads(request.body)
+        post = Post.objects.get(id = post_id)        
+        liked = is_liked(data, post_id)
         new_user_like = User.objects.get(id = data['user_id'])
-        post = Post.objects.get(id = post_id)
-        print(post.users_liked.all())
-        if new_user_like in post.users_liked.all():
-            liked = False
+        if liked:
             post.users_liked.remove(new_user_like)
         else:
-            liked = True
             post.users_liked.add(new_user_like)
         num_likes = len(post.users_liked.all())
-        return JsonResponse({"num_likes": num_likes, "liked": liked}, status=302)#HttpResponseRedirect(reverse("index"))
+        return JsonResponse({"num_likes": num_likes, "liked": not liked}, status=302)
     else:
         return JsonResponse({"error": "PUT request required."}, status=400)
 

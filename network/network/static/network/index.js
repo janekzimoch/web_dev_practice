@@ -7,11 +7,14 @@ document.addEventListener('DOMContentLoaded', function() {
     button.addEventListener('click', () => open_edit_modal(post_id))
   });
   // activate like button
-  const like_buttons = document.querySelectorAll('.like-button');
-  like_buttons.forEach((button) => {
+  const like_buttons = document.querySelectorAll('.like-button')
+  like_buttons.forEach(async (button) => {
     const post_id = button.getAttribute("post_id");
-    button.addEventListener('click', (e) => like_post(e, post_id, button))
+    button.addEventListener('click', (e) => like_post(e, post_id, button));
+    const liked = await is_liked(post_id);
+    button.querySelector('.like-button-text').innerText = liked ? 'Unlike' : 'Like';
   });
+
 });
 
 function send_post() {
@@ -22,6 +25,12 @@ function clear_modal() {  // function called only when writting na new post to c
   document.querySelector('#WritePost-post_id').value = "-1";
   document.querySelector('#WritePost-text_body').value = '';
   document.querySelector('#WritePost-text_title').value = '';
+}
+
+async function is_liked(post_id) {
+  const user_id = document.user_id;
+  const {liked} = await fetch(`/post/${post_id}/${user_id}/like`).then((response) => response.json());
+  return liked
 }
 
 function like_post(e, post_id, button) {
@@ -35,7 +44,7 @@ function like_post(e, post_id, button) {
       })
     }).then((response) => response.json())
     .then(({num_likes, liked}) => {
-      button.querySelector('.like-button-text').innerText = liked ? 'Like' : 'Unlike';
+      button.querySelector('.like-button-text').innerText = liked ? 'Unlike' : 'Like';
       button.querySelector('.like-button-counter').innerText = num_likes;
       });
 }
