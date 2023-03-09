@@ -20,7 +20,9 @@
               <span class="like-button-text">Like   </span>
               (<span class="like-button-counter">{{ post.num_likes }}</span>)
             </a>
-            <a href="#" class="card-link edit-button" id="edit_post_{{ id }}" post_id="{{ id }}">Edit</a>
+            {% if user  == post.author %}
+              <a href="#" class="card-link edit-button" id="edit_post_{{ id }}" post_id="{{ id }}">Edit</a>
+            {% endif %}
           </div>
         </div>
       {% endfor %}
