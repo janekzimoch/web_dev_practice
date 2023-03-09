@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const liked = await is_liked(post_id);
     button.querySelector('.like-button-text').innerText = liked ? 'Unlike' : 'Like';
   });
-
 });
 
 function send_post() {
@@ -32,6 +31,7 @@ async function is_liked(post_id) {
   const {liked} = await fetch(`/post/${post_id}/${user_id}/like`).then((response) => response.json());
   return liked
 }
+
 
 function like_post(e, post_id, button) {
     const user_id = document.user_id;

@@ -12,6 +12,7 @@ class Post(models.Model):
     text_title = models.TextField()
     text_body = models.TextField()
     time_published = models.CharField(max_length=32)
+    num_likes = models.IntegerField(default=0)
 
     def serialize(self):
         return {
